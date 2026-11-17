@@ -1,0 +1,26 @@
+{
+  "name": "gato-tecleador",
+  "version": "1.0.0",
+  "description": "Overlay de un gato que teclea mientras jugás",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "dependencies": {
+    "uiohook-napi": "^1.5.4"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "com.gato.tecleador",
+    "productName": "Gato Tecleador",
+    "files": ["main.js", "preload.js", "index.html", "package.json"],
+    "asarUnpack": ["node_modules/uiohook-napi/**"],
+    "win": { "target": "portable" },
+    "mac": { "target": "dmg" },
+    "linux": { "target": "AppImage" }
+  }
+}

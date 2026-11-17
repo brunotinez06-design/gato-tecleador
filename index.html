@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<title>Gato tecleador</title>
+<style>
+html,body{height:100%;margin:0;background:transparent;overflow:hidden}
+body{display:flex;align-items:center;justify-content:center;user-select:none}
+body.unlocked{-webkit-app-region:drag;outline:2px dashed #ff8fa3;outline-offset:-2px;background:rgba(255,143,163,.12);border-radius:12px}
+svg{overflow:visible;width:100vw;height:100vh}
+.st{stroke:#000;stroke-width:3;stroke-linejoin:round}
+.paw{transition:transform .09s;transform:translate(var(--x,0px),calc(var(--y,0px) + var(--d,0px)))}
+.paw.down{--d:26px;transition:transform .06s}
+.paw.click{--d:6px;transition:transform .06s}
+#ms{transition:transform .12s}
+.tail{animation:sway 2.4s ease-in-out infinite;transform-origin:268px 120px}
+@keyframes sway{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(9deg)}}
+</style></head>
+<body>
+<svg viewBox="0 0 420 285" aria-label="Gato tecleando">
+  <g id="scene" transform="rotate(14 200 150)">
+  <rect class="st" x="76" y="146" width="248" height="70" rx="6" fill="#edf0fa"/>
+  <g id="keys"></g>
+  <g id="ms">
+    <ellipse cx="356" cy="216" rx="20" ry="3.5" fill="rgba(0,0,0,.18)"/>
+    <ellipse class="st" cx="356" cy="204" rx="16" ry="11" fill="#f4f5fa"/>
+    <path d="M341 205 Q356 201 371 205" fill="none" stroke="#000" stroke-width="2"/>
+    <line x1="356" y1="203" x2="356" y2="214.5" stroke="#000" stroke-width="2"/>
+    <rect x="353.5" y="205" width="5" height="7" rx="2.5" fill="#ffb8c2" stroke="#000" stroke-width="1.4"/>
+  </g>
+  <g transform="rotate(0 200 146)">
+  <g class="tail"><path d="M266 122 Q304 126 298 90 Q296 76 308 72" fill="none" stroke="#000" stroke-width="11" stroke-linecap="round"/><path d="M266 122 Q304 126 298 90 Q296 76 308 72" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/></g>
+  <polygon class="st" points="136,86 144,28 178,60" fill="#fff"/>
+  <polygon class="st" points="222,60 256,28 264,86" fill="#fff"/>
+  <polygon points="143.5,73.4 148.3,42.4 166.6,59.1" fill="#ffc4cf"/>
+  <polygon points="233.4,59.1 252.1,42.4 256.5,73.4" fill="#ffc4cf"/>
+  <ellipse class="st" cx="200" cy="100" rx="74" ry="46" fill="#fff"/>
+  <ellipse cx="166" cy="96" rx="5" ry="6" fill="#000"/>
+  <ellipse cx="234" cy="96" rx="5" ry="6" fill="#000"/>
+  <circle cx="164.5" cy="93.5" r="1.9" fill="#fff"/><circle cx="232.5" cy="93.5" r="1.9" fill="#fff"/>
+  <ellipse cx="146" cy="112" rx="10" ry="5.5" fill="#ffc4cf" opacity=".85"/><ellipse cx="254" cy="112" rx="10" ry="5.5" fill="#ffc4cf" opacity=".85"/>
+  <ellipse cx="200" cy="102" rx="3.5" ry="2.4" fill="#ff8fa3"/>
+  <path d="M146 104 L118 99 M146 111 L117 114 M254 104 L282 99 M254 111 L283 114" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+  <path d="M186 106 Q193 114 200 107 Q207 114 214 106" fill="none" stroke="#000" stroke-width="2.8" stroke-linecap="round"/>
+  </g>
+  <g id="pl" class="paw">
+    <ellipse class="st" cx="176" cy="150" rx="21" ry="15" fill="#fff"/>
+    <ellipse cx="176" cy="145" rx="7" ry="5.5" fill="#ffb8c2"/>
+    <circle cx="169" cy="156" r="2.7" fill="#ffb8c2"/><circle cx="176" cy="158" r="2.7" fill="#ffb8c2"/><circle cx="183" cy="156" r="2.7" fill="#ffb8c2"/>
+  </g>
+  <g id="pr" class="paw">
+    <ellipse class="st" cx="226" cy="150" rx="21" ry="15" fill="#fff"/>
+    <ellipse cx="226" cy="145" rx="7" ry="5.5" fill="#ffb8c2"/>
+    <circle cx="219" cy="156" r="2.7" fill="#ffb8c2"/><circle cx="226" cy="158" r="2.7" fill="#ffb8c2"/><circle cx="233" cy="156" r="2.7" fill="#ffb8c2"/>
+  </g>
+  </g>
+</svg>
+<script>
+const keysG = document.getElementById('keys'), NS = 'http://www.w3.org/2000/svg', rects = {};
+function addKey(x, y, w, h, fs, label, code, base) {
+  x = 400 - x - w; y = 363.5 - y - h;
+  const k = document.createElementNS(NS, 'rect');
+  k.setAttribute('x', x); k.setAttribute('y', y); k.setAttribute('width', w); k.setAttribute('height', h); k.setAttribute('rx', 3);
+  k.setAttribute('fill', base); k.dataset.base = base; k.setAttribute('stroke', '#000'); k.setAttribute('stroke-width', 1.6);
+  const cx = x + w / 2, cy = y + h / 2;
+  const t = document.createElementNS(NS, 'text');
+  t.setAttribute('x', cx); t.setAttribute('y', cy + fs * 0.36);
+  t.setAttribute('text-anchor', 'middle'); t.setAttribute('font-size', fs); t.setAttribute('font-weight', 800);
+  t.setAttribute('fill', '#000'); t.setAttribute('font-family', 'ui-monospace,Menlo,monospace');
+  t.setAttribute('transform', `rotate(180 ${cx} ${cy})`);
+  t.textContent = label;
+  keysG.appendChild(k); keysG.appendChild(t); rects[code] = k;
+}
+for (let i = 1; i <= 12; i++) addKey(81 + (i - 1) * 20, 150, 18.4, 8, 6, 'F' + i, 'F' + i, '#fff');
+const special = {';': 'Semicolon', ',': 'Comma', '.': 'Period', '/': 'Slash'};
+['QWERTYUIOP', 'ASDFGHJKL;', 'ZXCVBNM,./'].forEach((row, r) => [...row].forEach((ch, c) =>
+  addKey(81 + c * 24, 161.5 + r * 13.4, 22, 12, 10, ch, special[ch] || 'Key' + ch, 'WASD'.includes(ch) ? '#ff4d4d' : '#fff')));
+[['⌥', 0, 1, 'AltLeft'], ['⌘', 1, 1, 'MetaLeft'], ['', 2, 6, 'Space'], ['⌘', 8, 1, 'MetaRight'], ['⌥', 9, 1, 'AltRight']]
+  .forEach(([lb, c, n, code]) => addKey(81 + c * 24, 161.5 + 3 * 13.4, n * 24 - 2, 12, 10, lb, code, '#fff'));
+
+const pl = document.getElementById('pl'), pr = document.getElementById('pr'), ms = document.getElementById('ms');
+let left = true, pawT = {}, mouseOn = false, mouseT, nx = 0, ny = 0;
+
+function tap(p, cls) {
+  p.classList.add(cls); clearTimeout(pawT[p.id + cls]);
+  pawT[p.id + cls] = setTimeout(() => p.classList.remove(cls), 110);
+}
+function pawGo(p, r, tx) {
+  const bx = p === pl ? 176 : 226;
+  let dx = 0, dy = 26;
+  if (r) {
+    dx = (tx !== undefined ? tx : +r.getAttribute('x') + +r.getAttribute('width') / 2) - bx;
+    dy = +r.getAttribute('y') + +r.getAttribute('height') / 2 - 150 - 12;
+  }
+  p.style.setProperty('--x', dx + 'px'); p.style.setProperty('--y', dy + 'px');
+  clearTimeout(pawT[p.id]);
+  pawT[p.id] = setTimeout(() => {
+    if (p === pr && mouseOn) return;
+    p.style.setProperty('--x', '0px'); p.style.setProperty('--y', '0px');
+  }, 170);
+}
+function moveMouse() {
+  mouseOn = true;
+  pr.style.setProperty('--x', (130 + nx * 8) + 'px'); pr.style.setProperty('--y', (48 + ny * 5) + 'px');
+  ms.style.transform = `translate(${nx * 8}px,${ny * 5}px)`;
+  clearTimeout(mouseT);
+  mouseT = setTimeout(() => {
+    mouseOn = false; pr.style.setProperty('--x', '0px'); pr.style.setProperty('--y', '0px'); ms.style.transform = 'translate(0,0)';
+  }, 900);
+}
+const lit = new Set();
+function onKeyDown(m) {
+  const kr = rects[m.code];
+  let p;
+  if (kr) {
+    const kx = +kr.getAttribute('x') + +kr.getAttribute('width') / 2;
+    p = (mouseOn || kx < 200) ? pl : pr;
+  } else { p = (left || mouseOn) ? pl : pr; left = !left; }
+  if (m.code === 'Space' && kr) {
+    const sx = +kr.getAttribute('x'), sw = +kr.getAttribute('width');
+    pawGo(pl, kr, sx + sw * 0.28);
+    if (!mouseOn) pawGo(pr, kr, sx + sw * 0.72);
+  } else pawGo(p, kr);
+  if (kr) { kr.setAttribute('fill', '#ff8fa3'); lit.add(kr); }
+}
+function onKeyUp(m) {
+  const kr = rects[m.code];
+  if (kr) { kr.setAttribute('fill', kr.dataset.base); lit.delete(kr); }
+}
+window.api.onInput(m => {
+  if (m.type === 'keydown') onKeyDown(m);
+  else if (m.type === 'keyup') onKeyUp(m);
+  else if (m.type === 'move') { nx = m.nx; ny = m.ny; moveMouse(); }
+  else if (m.type === 'mousedown') { moveMouse(); tap(pr, 'click'); }
+});
+window.api.onLock(u => document.body.classList.toggle('unlocked', u));
+</script>
+</body></html>
